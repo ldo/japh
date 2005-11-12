@@ -1,0 +1,77 @@
+#!/usr/bin/python
+#+
+# Program to determine an increasing sequence of prime integers
+# whose modulos relative to the length of a specified character
+# set spell out a given phrase.
+#
+# Created 2005 November 12 by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+#-
+
+import sys
+
+def primes() :
+	"""generator function which yields the prime numbers in sequence."""
+	yield 2
+	yielded = [2]
+	n = 3
+	while True :
+		prev_yielded = iter(yielded)
+		while True :
+			try :
+				prev = prev_yielded.next()
+				if n % prev == 0 :
+					IsPrime = False
+					break
+				#end if
+			except StopIteration :
+				IsPrime = True
+				break
+			#end try
+		#end while
+		if IsPrime :
+			yield n
+			yielded.append(n)
+		#end if
+		n += 2
+	#end while
+#end primes
+
+phrase = "Just another Python hacker."
+charset = "".join(sorted(tuple(set(phrase))))
+prime = iter(primes())
+while True :
+	modulo = prime.next()
+	if modulo > len(charset) :
+	  # note comparison is ">" not ">=" because a remainder
+	  # of 0 cannot occur.
+		break
+#end while
+sys.stdout.write("charset = \"%s\"\n" % charset)
+sys.stdout.write("modulo = %d\n" % modulo)
+
+prime = iter(primes())
+s = 1
+for char in phrase :
+	code = charset.find(char) + 1
+	while True :
+		n = prime.next()
+		if n % modulo == code :
+			# sys.stdout.write("%s => %d\n" % (char, n)) # debug
+			s *= n
+			break
+		#end if
+	#end while
+#end for
+sys.stdout.write("s = %d\n" % s)
+
+# the following sequence, appended to the variable definitions
+# output above, will reconstruct the original phrase.
+num = iter(range(2, 9999))
+while s != 1 :
+	n = num.next()
+	if s % n == 0 :
+		sys.stdout.write("%s" % charset[(n - 1) % modulo])
+		s /= n
+	#end if
+#end while
+sys.stdout.write("\n")
