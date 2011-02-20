@@ -2,9 +2,11 @@
 #+
 # Program to determine an increasing sequence of prime integers
 # whose modulos relative to the length of a specified character
-# set spell out a given phrase.
+# set spell out a given phrase. This program then outputs a
+# Python program which contains that number and decodes it to
+# the original phrase.
 #
-# Created 2005 November 12 by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+# Written by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
 #-
 
 import sys
@@ -36,7 +38,11 @@ def primes() :
 	#end while
 #end primes
 
-phrase = "Just another Python hacker."
+if len(sys.argv) != 2 :
+	raise RuntimeError("Need 1 arg, the phrase to encode")
+#end if
+
+phrase = sys.argv[1]
 charset = "".join(sorted(tuple(set(phrase))))
 prime = iter(primes())
 while True :
@@ -46,7 +52,9 @@ while True :
 	  # of 0 cannot occur.
 		break
 #end while
-sys.stdout.write("charset = \"%s\"\n" % charset)
+sys.stdout.write("#!/usr/bin/python\n\n")
+sys.stdout.write("import sys\n\n")
+sys.stdout.write("charset = %s\n" % repr(charset))
 sys.stdout.write("modulo = %d\n" % modulo)
 
 prime = iter(primes())
@@ -64,14 +72,15 @@ for char in phrase :
 #end for
 sys.stdout.write("s = %d\n" % s)
 
-# the following sequence, appended to the variable definitions
-# output above, will reconstruct the original phrase.
-num = iter(range(2, 9999))
-while s != 1 :
-	n = num.next()
-	if s % n == 0 :
-		sys.stdout.write("%s" % charset[(n - 1) % modulo])
-		s /= n
-	#end if
-#end while
-sys.stdout.write("\n")
+sys.stdout.write \
+  (
+	"num = iter(range(2, 99999))\n" # fixme: make upper bound dependent on how much I actually need
+	"while s != 1 :\n"
+	"	n = num.next()\n"
+	"	if s % n == 0 :\n"
+	"		sys.stdout.write(\"%s\" % charset[(n - 1) % modulo])\n"
+	"		s /= n\n"
+	"	#end if\n"
+	"#end while\n"
+	"sys.stdout.write(\"\\n\")\n"
+  )
