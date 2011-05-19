@@ -10,6 +10,7 @@
 #-
 
 import sys
+import math
 
 def primes() :
 	"""generator function which yields the prime numbers in sequence."""
@@ -74,7 +75,12 @@ sys.stdout.write("s = %d\n" % s)
 
 sys.stdout.write \
   (
-	"num = iter(range(2, 99999))\n" # fixme: make upper bound dependent on how much I actually need
+		"num = iter(range(2, %d))\n"
+	%
+		int(10 ** math.ceil(math.log10(n)) - 1)
+  )
+sys.stdout.write \
+  (
 	"while s != 1 :\n"
 	"	n = num.next()\n"
 	"	if s % n == 0 :\n"
