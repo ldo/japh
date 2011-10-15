@@ -13,45 +13,45 @@ import sys
 import math
 
 def primes() :
-	"""generator function which yields the prime numbers in sequence."""
-	yield 2
-	yielded = [2]
-	n = 3
-	while True :
-		prev_yielded = iter(yielded)
-		while True :
-			try :
-				prev = prev_yielded.next()
-				if n % prev == 0 :
-					IsPrime = False
-					break
-				#end if
-			except StopIteration :
-				IsPrime = True
-				break
-			#end try
-		#end while
-		if IsPrime :
-			yield n
-			yielded.append(n)
-		#end if
-		n += 2
-	#end while
+    """generator function which yields the prime numbers in sequence."""
+    yield 2
+    yielded = [2]
+    n = 3
+    while True :
+        prev_yielded = iter(yielded)
+        while True :
+            try :
+                prev = prev_yielded.next()
+                if n % prev == 0 :
+                    IsPrime = False
+                    break
+                #end if
+            except StopIteration :
+                IsPrime = True
+                break
+            #end try
+        #end while
+        if IsPrime :
+            yield n
+            yielded.append(n)
+        #end if
+        n += 2
+    #end while
 #end primes
 
 if len(sys.argv) != 2 :
-	raise RuntimeError("Need 1 arg, the phrase to encode")
+    raise RuntimeError("Need 1 arg, the phrase to encode")
 #end if
 
 phrase = sys.argv[1]
 charset = "".join(sorted(tuple(set(phrase))))
 prime = iter(primes())
 while True :
-	modulo = prime.next()
-	if modulo > len(charset) :
-	  # note comparison is ">" not ">=" because a remainder
-	  # of 0 cannot occur.
-		break
+    modulo = prime.next()
+    if modulo > len(charset) :
+      # note comparison is ">" not ">=" because a remainder
+      # of 0 cannot occur.
+        break
 #end while
 sys.stdout.write("#!/usr/bin/python\n\n")
 sys.stdout.write("import sys\n\n")
@@ -61,32 +61,32 @@ sys.stdout.write("modulo = %d\n" % modulo)
 prime = iter(primes())
 s = 1
 for char in phrase :
-	code = charset.find(char) + 1
-	while True :
-		n = prime.next()
-		if n % modulo == code :
-			# sys.stdout.write("%s => %d\n" % (char, n)) # debug
-			s *= n
-			break
-		#end if
-	#end while
+    code = charset.find(char) + 1
+    while True :
+        n = prime.next()
+        if n % modulo == code :
+            # sys.stdout.write("%s => %d\n" % (char, n)) # debug
+            s *= n
+            break
+        #end if
+    #end while
 #end for
 sys.stdout.write("s = %d\n" % s)
 
 sys.stdout.write \
   (
-		"num = iter(range(2, %d))\n"
-	%
-		int(10 ** math.ceil(math.log10(n)) - 1)
+        "num = iter(range(2, %d))\n"
+    %
+        int(10 ** math.ceil(math.log10(n)) - 1)
   )
 sys.stdout.write \
   (
-	"while s != 1 :\n"
-	"	n = num.next()\n"
-	"	if s % n == 0 :\n"
-	"		sys.stdout.write(\"%s\" % charset[(n - 1) % modulo])\n"
-	"		s /= n\n"
-	"	#end if\n"
-	"#end while\n"
-	"sys.stdout.write(\"\\n\")\n"
+    "while s != 1 :\n"
+    "    n = num.next()\n"
+    "    if s % n == 0 :\n"
+    "        sys.stdout.write(\"%s\" % charset[(n - 1) % modulo])\n"
+    "        s /= n\n"
+    "    #end if\n"
+    "#end while\n"
+    "sys.stdout.write(\"\\n\")\n"
   )
