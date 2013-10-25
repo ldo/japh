@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #+
 # Program to determine an increasing sequence of prime integers
 # whose modulos relative to the length of a specified character
@@ -21,7 +21,7 @@ def primes() :
         prev_yielded = iter(yielded)
         while True :
             try :
-                prev = prev_yielded.next()
+                prev = next(prev_yielded)
                 if n % prev == 0 :
                     IsPrime = False
                     break
@@ -47,13 +47,13 @@ phrase = sys.argv[1]
 charset = "".join(sorted(tuple(set(phrase))))
 prime = iter(primes())
 while True :
-    modulo = prime.next()
+    modulo = next(prime)
     if modulo > len(charset) :
       # note comparison is ">" not ">=" because a remainder
       # of 0 cannot occur.
         break
 #end while
-sys.stdout.write("#!/usr/bin/python\n\n")
+sys.stdout.write("#!/usr/bin/python3\n\n")
 sys.stdout.write("import sys\n\n")
 sys.stdout.write("charset = %s\n" % repr(charset))
 sys.stdout.write("modulo = %d\n" % modulo)
@@ -63,7 +63,7 @@ s = 1
 for char in phrase :
     code = charset.find(char) + 1
     while True :
-        n = prime.next()
+        n = next(prime)
         if n % modulo == code :
             # sys.stdout.write("%s => %d\n" % (char, n)) # debug
             s *= n
@@ -82,10 +82,10 @@ sys.stdout.write \
 sys.stdout.write \
   (
     "while s != 1 :\n"
-    "    n = num.next()\n"
+    "    n = next(num)\n"
     "    if s % n == 0 :\n"
     "        sys.stdout.write(\"%s\" % charset[(n - 1) % modulo])\n"
-    "        s /= n\n"
+    "        s //= n\n"
     "    #end if\n"
     "#end while\n"
     "sys.stdout.write(\"\\n\")\n"
